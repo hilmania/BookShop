@@ -21,6 +21,12 @@ export default class Troli extends Component {
             tx.executeSql('SELECT * FROM troli', null, (_, { rows: { _array } }) => {
                 // alert(JSON.stringify(_array));
                 this.setState({ troli: _array })
+            },
+            error => {
+                alert(error);
+            },
+            () => {
+            
             });
         });
     }
