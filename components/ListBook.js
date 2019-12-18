@@ -62,6 +62,10 @@ export default class ListBook extends Component {
     }
 
     buy = (item,index) => {
+        if (this.state.qty == '' | this.state.qty == undefined) {
+            alert('qty harus diisi');
+            return;
+        }
         var qty = parseInt(this.state.qty);
         var price = parseFloat(item.price.replace('$',''));
         var subtotal = qty * price;
