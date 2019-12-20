@@ -9,7 +9,7 @@ const db = SQLite.openDatabase('bookshop.db');
 export default class Troli extends Component {
     state = {
         troli : [],
-        total:0
+        total: 0
     }
 
     static navigationOptions = {
@@ -21,7 +21,13 @@ export default class Troli extends Component {
         db.transaction(tx=> {
             tx.executeSql('SELECT * FROM troli', null, (_, { rows: { _array } }) => {
                 // alert(JSON.stringify(_array));
-                this.setState({ troli: _array })
+                let totaltmp= 0;
+                for(let i=0;i<_array.length;i++){
+                    let row = _array[i];
+                    totaltmp += row.qty * row.price;
+                }
+                this.setState({total: totaltmp});
+                this.setState({ troli: _array });
             },
             error => {
                 alert(error);
@@ -83,6 +89,7 @@ export default class Troli extends Component {
                 {
                     text: 'Checkout',
                     onPress: () => {
+                        alert(JSON.stringify(this.state.troli));
                         db.transaction(
                             tx => {
                                 tx.executeSql("DELETE FROM troli")
@@ -93,7 +100,8 @@ export default class Troli extends Component {
                             () => {
                                 var dAr = this.state.troli;
                                 dAr.splice(0);
-                                this.setState({troli:dAr})                            
+                                this.setState({troli:dAr}); 
+                                this.setState({total:0});                           
                             }
                         );
                     }
@@ -105,7 +113,7 @@ export default class Troli extends Component {
 
     render() {
         const {navigation} = this.props;
-        let tmp = 0;
+        var total=0;
         return (
             <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
                 <SafeAreaView style={styles.container}>
@@ -114,7 +122,7 @@ export default class Troli extends Component {
                         data={this.state.troli}
                         renderItem={({item, index}) => {
                             let subtotal = item.price * item.qty;
-                            tmp = tmp+subtotal;
+                            total += subtotal;
                             
                             return (
                                 <View style={{marginLeft: 10}}>
@@ -131,7 +139,7 @@ export default class Troli extends Component {
                         }}
                         keyExtractor={item => item.isbn13}/>
                         <View style={{marginBottom:10, marginTop:10}}>
-                            <Text style={{fontSize: 20, marginLeft:10, marginBottom:20}}>Total = {tmp} </Text>
+                            <Text style={{fontSize: 20, marginLeft:10, marginBottom:20}}>Total = {this.state.total} </Text>
                             <Button style={styles.fullWidthButton}
                                 onPress={()=> this.checkout()}
                                 title="Checkout"/>

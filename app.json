@@ -25,6 +25,11 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "io.hilmania.bookshop",
+      "versionCode": 1,
+      "icon": "./assets/icon.png"
     }
   }
 }
